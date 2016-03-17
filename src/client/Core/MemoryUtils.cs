@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace GalacticConquest.Core
@@ -16,5 +17,13 @@ namespace GalacticConquest.Core
 
 		[DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
 		public static extern IntPtr memcpy(IntPtr dest, IntPtr src, UIntPtr count);
+
+		public static int ReadInt32(int address)
+		{
+			byte[] buffer = new byte[4];
+			int bytesRead = 0;
+			ReadProcessMemory((int)OpenProcess(0x1F0FFF, false, Process.GetCurrentProcess().Id), address, buffer, 4, ref bytesRead);
+			return BitConverter.ToInt32(buffer, 0);
+		}
 	}
 }

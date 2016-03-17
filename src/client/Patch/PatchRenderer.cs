@@ -30,6 +30,12 @@ namespace GalacticConquest.Patch
 				Sprite s = new Sprite(device);
 
 				s.Begin(SpriteFlags.AlphaBlend);
+
+				int mouseX = MemoryUtils.ReadInt32(0x85CAB4);
+				int mouseY = MemoryUtils.ReadInt32(0x85CAB8);
+
+				GalacticConquest.ModuleCEF.SetMousePosition(mouseX, mouseY);
+
 				Texture cefTexture = GalacticConquest.ModuleCEF.GetTexture(device);
 				if (cefTexture != null)
 					s.Draw(cefTexture, new SharpDX.Mathematics.Interop.RawColorBGRA(255, 255, 255, 255));

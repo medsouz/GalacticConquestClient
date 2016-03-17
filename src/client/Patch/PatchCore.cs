@@ -1,7 +1,6 @@
 ﻿using GalacticConquest.Core;
 using System;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace GalacticConquest.Patch
 {

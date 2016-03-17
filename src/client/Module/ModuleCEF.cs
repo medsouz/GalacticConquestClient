@@ -19,41 +19,59 @@ namespace GalacticConquest.Module
 		private Texture texture = null;
 		private Mutex mutex = new Mutex();
 
-		public ModuleCEF()
+		public void OpenPage(string url)
 		{
-			CefRuntime.Load();
+			if (browser == null)
+			{
+				CefRuntime.Load();
 
-			CefMainArgs cefMainArgs = new CefMainArgs(new string[0]);
-			WebRendererApp cefApp = new WebRendererApp();
-			CefRuntime.ExecuteProcess(cefMainArgs, cefApp, IntPtr.Zero);
+				CefMainArgs cefMainArgs = new CefMainArgs(new string[0]);
+				WebRendererApp cefApp = new WebRendererApp();
+				CefRuntime.ExecuteProcess(cefMainArgs, cefApp, IntPtr.Zero);
 
-			CefSettings cefSettings = new CefSettings();
-			cefSettings.MultiThreadedMessageLoop = true;
-			cefSettings.SingleProcess = true;
-			cefSettings.LogSeverity = CefLogSeverity.Info;
-            cefSettings.LogFile = "cef.log";
-			cefSettings.RemoteDebuggingPort = 20480;
+				CefSettings cefSettings = new CefSettings();
+				cefSettings.MultiThreadedMessageLoop = true;
+				cefSettings.SingleProcess = true;
+				cefSettings.LogSeverity = CefLogSeverity.Info;
+				cefSettings.LogFile = "cef.log";
+				cefSettings.RemoteDebuggingPort = 20480;
 
-			CefRuntime.Initialize(cefMainArgs, cefSettings, cefApp, IntPtr.Zero);
-			CefWindowInfo cefWindowInfo = CefWindowInfo.Create();
-			cefWindowInfo.SetAsWindowless(Process.GetCurrentProcess().MainWindowHandle, false);
+				CefRuntime.Initialize(cefMainArgs, cefSettings, cefApp, IntPtr.Zero);
+				CefWindowInfo cefWindowInfo = CefWindowInfo.Create();
+				cefWindowInfo.SetAsWindowless(Process.GetCurrentProcess().MainWindowHandle, false);
 
-			CefBrowserSettings cefBrowserSettings = new CefBrowserSettings();
+				CefBrowserSettings cefBrowserSettings = new CefBrowserSettings();
 
-			WebRendererClient cefClient = new WebRendererClient(1920, 1080, this);
+				WebRendererClient cefClient = new WebRendererClient(1920, 1080, this);
 
-			CefBrowserHost.CreateBrowser(cefWindowInfo, cefClient, cefBrowserSettings, "http://shadowfita.github.io/galactic-conquest");
+				CefBrowserHost.CreateBrowser(cefWindowInfo, cefClient, cefBrowserSettings, url);
+			}
+			else
+			{
+				browser.GetMainFrame().LoadUrl(url);
+			}
 		}
 
 		internal void OnBrowserCreated(CefBrowser browser)
 		{
 			this.browser = browser;
-			browser.GetHost().CloseBrowser();
-        }
+		}
 
 		public void SetBuffer(IntPtr buff)
 		{
 			buffer = buff;
+		}
+
+		public void SetMousePosition(int x, int y)
+		{
+			if(browser != null)
+			{
+				CefMouseEvent mouseEvent = new CefMouseEvent();
+				mouseEvent.Modifiers = CefEventFlags.None;
+				mouseEvent.X = x;
+				mouseEvent.Y = y;
+				browser.GetHost().SendMouseMoveEvent(mouseEvent, false);
+			}
 		}
 
 		public Texture GetTexture(Device device)

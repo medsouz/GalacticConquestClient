@@ -24,6 +24,7 @@ namespace GalacticConquest
 			try {
 				//Load modules
 				ModuleCEF = new ModuleCEF();
+				ModuleCEF.OpenPage("http://shadowfita.github.io/galactic-conquest");
 				//Apply hooks
 				PatchRenderer = new PatchRenderer();
 				PatchCore = new PatchCore();
