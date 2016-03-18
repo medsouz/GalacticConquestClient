@@ -1,17 +1,22 @@
-﻿using GalacticConquest.Core;
-using GalacticConquest.Core.WebRenderer;
+﻿using Chromium;
+using GalacticConquest.Core;
 using SharpDX;
 using SharpDX.Direct3D9;
 using System;
 using System.Diagnostics;
 using System.Threading;
-using Xilium.CefGlue;
+using System.Windows.Forms;
+using Chromium.Event;
 
 namespace GalacticConquest.Module
 {
 	public class ModuleCEF
 	{
-		private CefBrowser browser;
+		private CfxBrowser browser;
+		private CfxClient client;
+		private CfxRenderHandler renderHandler;
+		private CfxLifeSpanHandler lifeSpanHandler;
+		private CfxLoadHandler loadHandler;
 
 		//CEF display buffer
 		private IntPtr buffer = IntPtr.Zero;
@@ -19,58 +24,97 @@ namespace GalacticConquest.Module
 		private Texture texture = null;
 		private Mutex mutex = new Mutex();
 
+		public ModuleCEF()
+		{
+			CfxApp application = new CfxApp();
+			application.OnBeforeCommandLineProcessing += app_OnBeforeCommandLineProcessing;
+
+			int exitCode = CfxRuntime.ExecuteProcess(null);
+			if (exitCode >= 0)
+			{
+				Environment.Exit(exitCode);
+			}
+
+			CfxSettings settings = new CfxSettings();
+			settings.WindowlessRenderingEnabled = true;
+			settings.NoSandbox = true;
+			settings.BrowserSubprocessPath = "CEFProcess.exe";
+			settings.LogFile = "cef.log";
+			settings.RemoteDebuggingPort = 20480;
+			settings.SingleProcess = false;
+
+			if (!CfxRuntime.Initialize(settings, null))
+				MessageBox.Show("Failed to load CEF");
+		}
+
 		public void OpenPage(string url)
 		{
 			if (browser == null)
 			{
-				CefRuntime.Load();
+				renderHandler = new CfxRenderHandler();
+				renderHandler.GetViewRect += renderHandler_GetViewRect;
+				renderHandler.OnPaint += renderHandler_OnPaint;
 
-				CefMainArgs cefMainArgs = new CefMainArgs(new string[0]);
-				WebRendererApp cefApp = new WebRendererApp();
-				CefRuntime.ExecuteProcess(cefMainArgs, cefApp, IntPtr.Zero);
+				lifeSpanHandler = new CfxLifeSpanHandler();
+				lifeSpanHandler.OnAfterCreated += lifeSpanHandler_OnAfterCreated;
 
-				CefSettings cefSettings = new CefSettings();
-				cefSettings.MultiThreadedMessageLoop = true;
-				cefSettings.SingleProcess = true;
-				cefSettings.LogSeverity = CefLogSeverity.Info;
-				cefSettings.LogFile = "cef.log";
-				cefSettings.RemoteDebuggingPort = 20480;
+				loadHandler = new CfxLoadHandler();
 
-				CefRuntime.Initialize(cefMainArgs, cefSettings, cefApp, IntPtr.Zero);
-				CefWindowInfo cefWindowInfo = CefWindowInfo.Create();
-				cefWindowInfo.SetAsWindowless(Process.GetCurrentProcess().MainWindowHandle, false);
+				client = new CfxClient();
+				client.GetLifeSpanHandler += (sender, e) => e.SetReturnValue(lifeSpanHandler);
+				client.GetRenderHandler += (sender, e) => e.SetReturnValue(renderHandler);
+				client.GetLoadHandler += (sender, e) => e.SetReturnValue(loadHandler);
 
-				CefBrowserSettings cefBrowserSettings = new CefBrowserSettings();
+				CfxBrowserSettings settings = new CfxBrowserSettings();
+				settings.WindowlessFrameRate = 60;
 
-				WebRendererClient cefClient = new WebRendererClient(1920, 1080, this);
+				CfxWindowInfo windowInfo = new CfxWindowInfo();
+				windowInfo.SetAsWindowless(Process.GetCurrentProcess().Handle, false);
 
-				CefBrowserHost.CreateBrowser(cefWindowInfo, cefClient, cefBrowserSettings, url);
+				CfxBrowserHost.CreateBrowser(windowInfo, client, url, settings, null);
 			}
 			else
 			{
-				browser.GetMainFrame().LoadUrl(url);
+				browser.FocusedFrame.LoadUrl(url);
 			}
 		}
 
-		internal void OnBrowserCreated(CefBrowser browser)
+		private void app_OnBeforeCommandLineProcessing(object sender, CfxOnBeforeCommandLineProcessingEventArgs e)
 		{
-			this.browser = browser;
+			e.CommandLine.AppendSwitch("disable-extensions");
+			e.CommandLine.AppendSwitch("disable-gpu");
+			e.CommandLine.AppendSwitch("disable-gpu-compositing");
+			e.CommandLine.AppendSwitch("enable-begin-frame-scheduling");
 		}
 
-		public void SetBuffer(IntPtr buff)
+		private void renderHandler_GetViewRect(object sender, CfxGetViewRectEventArgs e)
 		{
-			buffer = buff;
+			e.Rect.X = 0;
+			e.Rect.Y = 0;
+			e.Rect.Width = 1920;
+			e.Rect.Height = 1080;
+			e.SetReturnValue(true);
+		}
+
+		private void renderHandler_OnPaint(object sender, CfxOnPaintEventArgs e)
+		{
+			buffer = e.Buffer;
+		}
+
+		private void lifeSpanHandler_OnAfterCreated(object sender, CfxOnAfterCreatedEventArgs e)
+		{
+			browser = e.Browser;
 		}
 
 		public void SetMousePosition(int x, int y)
 		{
 			if(browser != null)
 			{
-				CefMouseEvent mouseEvent = new CefMouseEvent();
-				mouseEvent.Modifiers = CefEventFlags.None;
+				CfxMouseEvent mouseEvent = new CfxMouseEvent();
+				mouseEvent.Modifiers = (uint)CfxEventFlags.None;
 				mouseEvent.X = x;
 				mouseEvent.Y = y;
-				browser.GetHost().SendMouseMoveEvent(mouseEvent, false);
+				browser.Host.SendMouseMoveEvent(mouseEvent, false);
 			}
 		}
 
@@ -92,19 +136,9 @@ namespace GalacticConquest.Module
 			return texture;
 		}
 
-		public bool ShuttingDown { get; private set; } = false;
-
 		public void Shutdown()
 		{
-			CefRuntime.Shutdown();
-			ShuttingDown = false;
-		}
-
-		public void WaitForShutdown()
-		{
-			ShuttingDown = true;
-			//Wait until the main thread kills CEF
-			while (ShuttingDown) { }
+			CfxRuntime.Shutdown();
 		}
 	}
 }

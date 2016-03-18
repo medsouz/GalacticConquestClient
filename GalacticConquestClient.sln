@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "src\client\Client
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launcher", "src\launcher\Launcher.csproj", "{DD26F034-F9B9-423D-874B-B90560FBBF2A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEFProcess", "src\cefprocess\CEFProcess.csproj", "{6F1F6A05-227D-43BB-B32E-1E458A21E399}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -15,12 +17,16 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{68D53264-DEB7-46EA-9426-B693B4E91A87}.Debug|x86.ActiveCfg = Debug|x86
 		{68D53264-DEB7-46EA-9426-B693B4E91A87}.Debug|x86.Build.0 = Debug|x86
-		{68D53264-DEB7-46EA-9426-B693B4E91A87}.Release|x86.ActiveCfg = Release|Any CPU
-		{68D53264-DEB7-46EA-9426-B693B4E91A87}.Release|x86.Build.0 = Release|Any CPU
+		{68D53264-DEB7-46EA-9426-B693B4E91A87}.Release|x86.ActiveCfg = Release|x86
+		{68D53264-DEB7-46EA-9426-B693B4E91A87}.Release|x86.Build.0 = Release|x86
 		{DD26F034-F9B9-423D-874B-B90560FBBF2A}.Debug|x86.ActiveCfg = Debug|x86
 		{DD26F034-F9B9-423D-874B-B90560FBBF2A}.Debug|x86.Build.0 = Debug|x86
 		{DD26F034-F9B9-423D-874B-B90560FBBF2A}.Release|x86.ActiveCfg = Release|x86
 		{DD26F034-F9B9-423D-874B-B90560FBBF2A}.Release|x86.Build.0 = Release|x86
+		{6F1F6A05-227D-43BB-B32E-1E458A21E399}.Debug|x86.ActiveCfg = Debug|x86
+		{6F1F6A05-227D-43BB-B32E-1E458A21E399}.Debug|x86.Build.0 = Debug|x86
+		{6F1F6A05-227D-43BB-B32E-1E458A21E399}.Release|x86.ActiveCfg = Release|x86
+		{6F1F6A05-227D-43BB-B32E-1E458A21E399}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

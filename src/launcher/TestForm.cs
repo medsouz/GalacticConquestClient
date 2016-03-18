@@ -47,12 +47,12 @@ namespace GalacticConquest.Launcher
 				//Setup EasyHook
 				Config.Register("GalacticConquest", "GalacticConquest.dll");
 
-				ProcessStartInfo SWBF2 = new ProcessStartInfo("BattlefrontII.exe", "/win /resolution 1920 1080 " + ((txtProfile.Text != "") ? "/name " + txtProfile.Text : ""));
+				ProcessStartInfo SWBF2 = new ProcessStartInfo("BattlefrontII-DVD.exe", "/win /resolution 1920 1080 " + ((txtProfile.Text != "") ? "/name " + txtProfile.Text : ""));
 				//TODO: Don't hardcode
 				SWBF2.WorkingDirectory = "D:\\Steam\\steamapps\\common\\Star Wars Battlefront II\\GameData";
 				Process proc = Process.Start(SWBF2);
 				//Inject our DLL
-				RemoteHooking.Inject(proc.Id, InjectionOptions.Default, "GalacticConquest.dll", "GalacticConquest.dll", "GalacticConquest");
+				RemoteHooking.Inject(proc.Id, InjectionOptions.Default, "GalacticConquest.dll", "GalacticConquest.dll",);
 
 				return proc;
 			}

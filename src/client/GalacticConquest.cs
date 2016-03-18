@@ -1,4 +1,5 @@
-﻿using EasyHook;
+﻿using Chromium;
+using EasyHook;
 using GalacticConquest.Module;
 using GalacticConquest.Patch;
 using System;
@@ -8,6 +9,8 @@ namespace GalacticConquest
 {
     public class GalacticConquest : IEntryPoint
 	{
+		public static bool ShuttingDown { get; private set; } = false;
+
 		// Modules
 		public static ModuleCEF ModuleCEF;
 
@@ -15,11 +18,11 @@ namespace GalacticConquest
 		public static PatchRenderer PatchRenderer;
 		public static PatchCore PatchCore;
 
-		public GalacticConquest(RemoteHooking.IContext context, String channelName)
+		public GalacticConquest(RemoteHooking.IContext context)
 		{
 		}
 
-		public void Run(RemoteHooking.IContext InContext, String channelName)
+		public void Run(RemoteHooking.IContext InContext)
 		{
 			try {
 				//Load modules
@@ -29,17 +32,25 @@ namespace GalacticConquest
 				PatchRenderer = new PatchRenderer();
 				PatchCore = new PatchCore();
 				//Keep this thread running
-				while (true)
+				while (!ShuttingDown)
 				{
-					//Kill CEF if requested
-					if (ModuleCEF.ShuttingDown)
-						ModuleCEF.Shutdown();
+					CfxRuntime.DoMessageLoopWork();
 				}
-			}
+				//Shutdown CEF
+				ModuleCEF.Shutdown();
+				//Shutdown is finished
+				ShuttingDown = false;
+            }
 			catch (Exception e)
 			{
-				MessageBox.Show(e.ToString(), "Galactic Conquest Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(e.ToString(), "Galactic Conquest Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
+		}
+
+		public static void WaitForShutdown()
+		{
+			ShuttingDown = true;
+            while (ShuttingDown){ }
 		}
     }
 }

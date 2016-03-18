@@ -1,6 +1,7 @@
 ﻿using GalacticConquest.Core;
 using System;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace GalacticConquest.Patch
 {
@@ -20,7 +21,7 @@ namespace GalacticConquest.Patch
 		char ExitGame()
 		{
 			//Close CEF before the game closes. This prevents a background process from running after the game has closed.
-			GalacticConquest.ModuleCEF.WaitForShutdown();
+			GalacticConquest.WaitForShutdown();
 			// Call the original function
 			return ExitGameHook.original();
 		}
