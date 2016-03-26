@@ -32,6 +32,10 @@
 			this.txtProfile = new System.Windows.Forms.TextBox();
 			this.btnStartGame = new System.Windows.Forms.Button();
 			this.btnForceload = new System.Windows.Forms.Button();
+			this.label2 = new System.Windows.Forms.Label();
+			this.txtWidth = new System.Windows.Forms.TextBox();
+			this.txtHeight = new System.Windows.Forms.TextBox();
+			this.label3 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -70,11 +74,49 @@
 			this.btnForceload.UseVisualStyleBackColor = true;
 			this.btnForceload.Click += new System.EventHandler(this.btnForceload_Click);
 			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(16, 57);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(35, 13);
+			this.label2.TabIndex = 5;
+			this.label2.Text = "Width";
+			// 
+			// txtWidth
+			// 
+			this.txtWidth.Location = new System.Drawing.Point(13, 74);
+			this.txtWidth.Name = "txtWidth";
+			this.txtWidth.Size = new System.Drawing.Size(100, 20);
+			this.txtWidth.TabIndex = 6;
+			this.txtWidth.Text = "1920";
+			// 
+			// txtHeight
+			// 
+			this.txtHeight.Location = new System.Drawing.Point(119, 74);
+			this.txtHeight.Name = "txtHeight";
+			this.txtHeight.Size = new System.Drawing.Size(100, 20);
+			this.txtHeight.TabIndex = 8;
+			this.txtHeight.Text = "1080";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(122, 57);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(38, 13);
+			this.label3.TabIndex = 7;
+			this.label3.Text = "Height";
+			// 
 			// TestForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(284, 261);
+			this.Controls.Add(this.txtHeight);
+			this.Controls.Add(this.label3);
+			this.Controls.Add(this.txtWidth);
+			this.Controls.Add(this.label2);
 			this.Controls.Add(this.btnForceload);
 			this.Controls.Add(this.btnStartGame);
 			this.Controls.Add(this.txtProfile);
@@ -92,5 +134,9 @@
 		private System.Windows.Forms.TextBox txtProfile;
 		private System.Windows.Forms.Button btnStartGame;
 		private System.Windows.Forms.Button btnForceload;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.TextBox txtWidth;
+		private System.Windows.Forms.TextBox txtHeight;
+		private System.Windows.Forms.Label label3;
 	}
 }

@@ -18,6 +18,9 @@ namespace GalacticConquest.Module
 		private CfxLifeSpanHandler lifeSpanHandler;
 		private CfxLoadHandler loadHandler;
 
+		public int width { get; private set; } = 0;
+		public int height { get; private set; } = 0;
+
 		//CEF display buffer
 		private IntPtr buffer = IntPtr.Zero;
 		//SharpDX texture
@@ -49,6 +52,8 @@ namespace GalacticConquest.Module
 
 		public void OpenPage(string url)
 		{
+			width = UI.GetWidth();
+			height = UI.GetHeight();
 			if (browser == null)
 			{
 				renderHandler = new CfxRenderHandler();
@@ -91,8 +96,8 @@ namespace GalacticConquest.Module
 		{
 			e.Rect.X = 0;
 			e.Rect.Y = 0;
-			e.Rect.Width = 1920;
-			e.Rect.Height = 1080;
+			e.Rect.Width = width;
+			e.Rect.Height = height;
 			e.SetReturnValue(true);
 		}
 
@@ -123,11 +128,11 @@ namespace GalacticConquest.Module
 			if (mutex.WaitOne())
 			{
 				if (texture == null)
-					texture = new Texture(device, 1920, 1080, 1, Usage.Dynamic, Format.A8R8G8B8, Pool.Default);
+					texture = new Texture(device, width, height, 1, Usage.Dynamic, Format.A8R8G8B8, Pool.Default);
 				if (buffer != IntPtr.Zero)
 				{
 					DataRectangle rect = texture.LockRectangle(0, LockFlags.Discard);
-					MemoryUtils.memcpy(rect.DataPointer, buffer, new UIntPtr(1920 * 1080 * 4));
+					MemoryUtils.memcpy(rect.DataPointer, buffer, new UIntPtr((uint)(width * height * 4)));
 					texture.UnlockRectangle(0);
 				}
 				mutex.ReleaseMutex();
