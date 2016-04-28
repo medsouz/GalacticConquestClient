@@ -141,11 +141,12 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>echo Copying EasyHook dependencies...
-copy $(SolutionDir)\ThirdParty\EasyHook-2.7\EasyHook32.dll $(TargetDir)
-copy $(SolutionDir)\ThirdParty\EasyHook-2.7\EasyHook32Svc.exe $(TargetDir)
-copy $(SolutionDir)\ThirdParty\EasyHook-2.7\EasyLoad32.dll $(TargetDir)
+copy $(SolutionDir)\ThirdParty\EasyHook-2.7\EasyHook32.dll $(TargetDir) &gt;nul 2&gt;&amp;1
+copy $(SolutionDir)\ThirdParty\EasyHook-2.7\EasyHook32Svc.exe $(TargetDir) &gt;nul 2&gt;&amp;1
+copy $(SolutionDir)\ThirdParty\EasyHook-2.7\EasyLoad32.dll $(TargetDir) &gt;nul 2&gt;&amp;1
 echo Copying ChromiumFX dependencies...
-xcopy /Y /e $(SolutionDir)ThirdParty\ChromiumFX-3.2526.2 $(TargetDir)</PostBuildEvent>
+xcopy /Y /e $(SolutionDir)ThirdParty\ChromiumFX-3.2526.2 $(TargetDir) &gt;nul 2&gt;&amp;1
+echo Done!</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
