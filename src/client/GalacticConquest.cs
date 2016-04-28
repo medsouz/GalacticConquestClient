@@ -31,6 +31,8 @@ namespace GalacticConquest
 				//Apply hooks
 				PatchRenderer = new PatchRenderer();
 				PatchCore = new PatchCore();
+				//Start the game
+				RemoteHooking.WakeUpProcess();
 				//Keep this thread running
 				while (!ShuttingDown)
 				{
