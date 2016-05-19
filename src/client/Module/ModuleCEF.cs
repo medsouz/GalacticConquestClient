@@ -90,6 +90,7 @@ namespace GalacticConquest.Module
 			e.CommandLine.AppendSwitch("disable-gpu");
 			e.CommandLine.AppendSwitch("disable-gpu-compositing");
 			e.CommandLine.AppendSwitch("enable-begin-frame-scheduling");
+			e.CommandLine.AppendSwitch("enable-experimental-web-platform-features");
 		}
 
 		private void renderHandler_GetViewRect(object sender, CfxGetViewRectEventArgs e)
@@ -125,20 +126,23 @@ namespace GalacticConquest.Module
 
 		public Texture GetTexture(Device device)
 		{
-			if (mutex.WaitOne())
+			if (browser != null)
 			{
-				if (texture == null)
-					texture = new Texture(device, width, height, 1, Usage.Dynamic, Format.A8R8G8B8, Pool.Default);
-				if (buffer != IntPtr.Zero)
+				if (mutex.WaitOne())
 				{
-					DataRectangle rect = texture.LockRectangle(0, LockFlags.Discard);
-					MemoryUtils.memcpy(rect.DataPointer, buffer, new UIntPtr((uint)(width * height * 4)));
-					texture.UnlockRectangle(0);
+					if (texture == null)
+						texture = new Texture(device, width, height, 1, Usage.Dynamic, Format.A8R8G8B8, Pool.Default);
+					if (buffer != IntPtr.Zero)
+					{
+						DataRectangle rect = texture.LockRectangle(0, LockFlags.Discard);
+						MemoryUtils.memcpy(rect.DataPointer, buffer, new UIntPtr((uint)(width * height * 4)));
+						texture.UnlockRectangle(0);
+					}
+					mutex.ReleaseMutex();
 				}
-				mutex.ReleaseMutex();
-			};
-
-			return texture;
+				return texture;
+			}
+			return null;
 		}
 
 		public void Shutdown()
