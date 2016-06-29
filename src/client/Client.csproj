@@ -62,7 +62,9 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Lua.cs" />
     <Compile Include="Core\MemoryUtils.cs" />
+    <Compile Include="Core\SWBF2Version.cs" />
     <Compile Include="Core\UI.cs" />
     <Compile Include="GalacticConquest.cs" />
     <Compile Include="Patch\PatchCore.cs" />

@@ -1,8 +1,12 @@
 ﻿using Chromium;
 using EasyHook;
+using GalacticConquest.Core;
 using GalacticConquest.Module;
 using GalacticConquest.Patch;
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 
 namespace GalacticConquest
@@ -20,6 +24,13 @@ namespace GalacticConquest
 
 		public GalacticConquest(RemoteHooking.IContext context)
 		{
+			SHA1CryptoServiceProvider cryptoProvider = new SHA1CryptoServiceProvider();
+			FileStream exeStream = new FileStream(Process.GetCurrentProcess().MainModule.FileName, FileMode.Open, FileAccess.Read);
+			string sha1sum = BitConverter.ToString(cryptoProvider.ComputeHash(exeStream)).Replace("-", "").ToLower();
+			exeStream.Close();
+
+			SWBF2Version version = SWBF2Version.getVersion(sha1sum);
+			MessageBox.Show(version.name + " | " + sha1sum, "SWBF2 Version");
 		}
 
 		public void Run(RemoteHooking.IContext InContext)
@@ -27,7 +38,7 @@ namespace GalacticConquest
 			try {
 				//Load modules
 				ModuleCEF = new ModuleCEF();
-				ModuleCEF.OpenPage("http://shadowfita.github.io/galactic-conquest");
+				//ModuleCEF.OpenPage("http://shadowfita.github.io/galactic-conquest");
 				//Apply hooks
 				PatchRenderer = new PatchRenderer();
 				PatchCore = new PatchCore();

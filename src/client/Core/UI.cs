@@ -1,4 +1,7 @@
-﻿namespace GalacticConquest.Core
+﻿using System;
+using System.Runtime.InteropServices;
+
+namespace GalacticConquest.Core
 {
 	public class UI
 	{
@@ -11,5 +14,11 @@
 		{
 			return MemoryUtils.ReadInt32(0x1F43884);
 		}
+
+		[DllImport("user32.dll")]
+		static extern IntPtr LoadCursorA(IntPtr hInstance, IntPtr lpCursorName);
+
+		[DllImport("user32.dll")]
+		static extern IntPtr SetCursor(IntPtr hCursor);
 	}
 }

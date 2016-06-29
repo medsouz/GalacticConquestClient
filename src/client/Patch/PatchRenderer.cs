@@ -19,7 +19,6 @@ namespace GalacticConquest.Patch
 			D3DDevice_EndSceneHook = new Hook<D3DDevice_EndSceneDelegate>(D3DDevice_EndScene_Address, new D3DDevice_EndSceneDelegate(D3DDevice_EndScene), this);
 		}
 
-
 		[UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
 		delegate int D3DDevice_EndSceneDelegate(IntPtr devicePtr);
 
